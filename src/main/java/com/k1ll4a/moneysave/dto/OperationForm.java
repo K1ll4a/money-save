@@ -35,6 +35,9 @@ public class OperationForm {
 
     private List<String> tags = new ArrayList<>();
 
+    @Size(max = 160, message = "Свои теги должны быть не длиннее 160 символов")
+    private String customTags;
+
     public OperationType getType() {
         return type;
     }
@@ -89,5 +92,13 @@ public class OperationForm {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getCustomTags() {
+        return customTags;
+    }
+
+    public void setCustomTags(String customTags) {
+        this.customTags = customTags;
     }
 }

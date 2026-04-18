@@ -101,6 +101,16 @@
             height: 16px;
             padding: 0;
         }
+        .custom-tags {
+            margin-top: 14px;
+            display: grid;
+            gap: 8px;
+        }
+        .hint {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
         .actions {
             grid-column: 1 / -1;
             display: flex;
@@ -147,7 +157,8 @@
             <div>
                 <label for="type">Тип операции
                     <form:select path="type" id="type">
-                        <form:options items="${operationTypes}" />
+                        <form:option value="EXPENSE" label="Расход" />
+                        <form:option value="INCOME" label="Доход" />
                     </form:select>
                 </label>
                 <form:errors path="type" cssClass="field-error" />
@@ -158,7 +169,7 @@
                     <form:select path="categoryId" id="categoryId">
                         <form:option value="" label="Выберите категорию" />
                         <c:forEach items="${categoryOptions}" var="category">
-                            <form:option value="${category.id}">${category.icon} ${category.name}</form:option>
+                            <form:option value="${category.id}">${category.name}</form:option>
                         </c:forEach>
                     </form:select>
                 </label>
@@ -182,7 +193,9 @@
             <div class="full">
                 <label for="paymentMethod">Способ оплаты
                     <form:select path="paymentMethod" id="paymentMethod">
-                        <form:options items="${paymentMethods}" />
+                        <form:option value="CASH" label="Наличные" />
+                        <form:option value="CARD" label="Карта" />
+                        <form:option value="TRANSFER" label="Перевод" />
                     </form:select>
                 </label>
                 <form:errors path="paymentMethod" cssClass="field-error" />
@@ -205,6 +218,11 @@
                         </label>
                     </c:forEach>
                 </div>
+                <label class="custom-tags" for="customTags">Свои теги
+                    <form:input path="customTags" id="customTags" placeholder="Например: кофе, отпуск, подарок" />
+                    <span class="hint">Можно добавить несколько тегов через запятую. Они сохранятся вместе с выбранными тегами выше.</span>
+                </label>
+                <form:errors path="customTags" cssClass="field-error" />
             </div>
 
             <div class="actions">

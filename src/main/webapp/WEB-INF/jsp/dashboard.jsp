@@ -60,16 +60,23 @@
         }
         .actions {
             display: flex;
+            align-items: center;
             gap: 12px;
             flex-wrap: wrap;
+        }
+        .logout-form {
+            display: flex;
+            margin: 0;
         }
         .btn, .btn-ghost {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            min-height: 48px;
             padding: 14px 18px;
             border-radius: 16px;
             text-decoration: none;
+            font: 600 16px/1.2 "IBM Plex Sans", sans-serif;
             font-weight: 600;
             border: none;
             cursor: pointer;
@@ -185,8 +192,15 @@
         .breakdown-head {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             gap: 12px;
             font-size: 14px;
+        }
+        .breakdown-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
         }
         .bar {
             height: 12px;
@@ -208,6 +222,7 @@
         .day {
             flex: 1;
             min-width: 6px;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: end;
@@ -244,8 +259,34 @@
             display: grid;
             place-items: center;
             color: white;
+            font-size: 22px;
             font-weight: 700;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
         }
+        .mini-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 9px;
+            display: inline-grid;
+            place-items: center;
+            color: white;
+            font-size: 15px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+        }
+        .icon::before, .mini-icon::before { content: "•"; }
+        .icon-fork::before { content: "🍽"; }
+        .icon-car::before { content: "🚕"; }
+        .icon-home::before { content: "⌂"; }
+        .icon-repeat::before { content: "↻"; }
+        .icon-spark::before { content: "★"; }
+        .icon-health::before { content: "✚"; }
+        .icon-shirt::before { content: "◈"; }
+        .icon-book::before { content: "▣"; }
+        .icon-dots::before { content: "…"; }
+        .icon-wallet::before { content: "₽"; }
+        .icon-pet::before { content: "♣"; }
+        .icon-plane::before { content: "✈"; }
+        .icon-gift::before { content: "◆"; }
         .op-meta strong {
             display: block;
             margin-bottom: 4px;
@@ -309,7 +350,7 @@
         <div class="actions">
             <a class="btn" href="${pageContext.request.contextPath}/operations/new">Добавить операцию</a>
             <a class="btn-ghost" href="${pageContext.request.contextPath}/categories">Категории</a>
-            <form action="${pageContext.request.contextPath}/logout" method="post" style="margin:0;">
+            <form class="logout-form" action="${pageContext.request.contextPath}/logout" method="post">
                 <button class="btn-ghost" type="submit">Выйти</button>
             </form>
         </div>
@@ -367,7 +408,10 @@
                         <c:forEach items="${dashboard.categoryBreakdown}" var="item">
                             <div class="breakdown-item">
                                 <div class="breakdown-head">
-                                    <span>${item.icon} ${item.name}</span>
+                                    <span class="breakdown-title">
+                                        <span class="mini-icon icon-${item.icon}" style="background:${item.colorHex};"></span>
+                                        ${item.name}
+                                    </span>
                                     <strong><fmt:formatNumber value="${item.amount}" minFractionDigits="2" maxFractionDigits="2"/> (${item.percent}%)</strong>
                                 </div>
                                 <div class="bar">
@@ -419,10 +463,13 @@
                     <div class="ops">
                         <c:forEach items="${dashboard.recentOperations}" var="operation">
                             <div class="op">
-                                <div class="icon" style="background:${operation.categoryColor};">${operation.categoryIcon}</div>
+                                <div class="icon icon-${operation.categoryIcon}" style="background:${operation.categoryColor};"></div>
                                 <div class="op-meta">
                                     <strong>${operation.categoryName}</strong>
-                                    <span>${operation.operationDate} • ${operation.paymentMethod} <c:if test="${not empty operation.comment}">• ${operation.comment}</c:if></span>
+                                    <span>
+                                        ${operation.operationDate} • ${operation.paymentMethodLabel}
+                                        <c:if test="${not empty operation.comment}">• ${operation.comment}</c:if>
+                                    </span>
                                     <c:if test="${not empty operation.tags}">
                                         <div class="tags">
                                             <c:forEach items="${operation.tags}" var="tag">

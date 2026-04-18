@@ -25,6 +25,13 @@ public record RecentOperationItem(
     public OperationType getType() { return type; }
     public BigDecimal getAmount() { return amount; }
     public PaymentMethod getPaymentMethod() { return paymentMethod; }
+    public String getPaymentMethodLabel() {
+        return switch (paymentMethod) {
+            case CASH -> "Наличные";
+            case CARD -> "Карта";
+            case TRANSFER -> "Перевод";
+        };
+    }
     public String getComment() { return comment; }
     public List<String> getTags() { return tags; }
 }

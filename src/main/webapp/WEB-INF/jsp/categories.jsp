@@ -72,14 +72,82 @@
             align-items: center;
             gap: 14px;
         }
-        .color {
+        .category-icon {
             width: 42px;
             height: 42px;
             border-radius: 14px;
             display: grid;
             place-items: center;
             color: white;
-            font-weight: 700;
+            font-size: 22px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+        }
+        .category-icon::before { content: "•"; }
+        .icon-fork::before { content: "🍽"; }
+        .icon-car::before { content: "🚕"; }
+        .icon-home::before { content: "⌂"; }
+        .icon-repeat::before { content: "↻"; }
+        .icon-spark::before { content: "★"; }
+        .icon-health::before { content: "✚"; }
+        .icon-shirt::before { content: "◈"; }
+        .icon-book::before { content: "▣"; }
+        .icon-dots::before { content: "…"; }
+        .icon-wallet::before { content: "₽"; }
+        .icon-pet::before { content: "♣"; }
+        .icon-plane::before { content: "✈"; }
+        .icon-gift::before { content: "◆"; }
+        .icon-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+            gap: 10px;
+        }
+        .icon-choice {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .icon-choice:hover {
+            transform: translateY(-1px);
+            border-color: rgba(31, 107, 82, 0.34);
+            box-shadow: 0 14px 32px rgba(18, 43, 33, 0.08);
+        }
+        .icon-choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .icon-choice:has(input:checked) {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(31, 107, 82, 0.12);
+        }
+        .icon-choice .category-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            font-size: 18px;
+            background: var(--accent);
+        }
+        .icon-choice span:last-child {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .color-field {
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+        input[type="color"] {
+            height: 54px;
+            padding: 6px;
+            cursor: pointer;
         }
         .type {
             font-size: 12px;
@@ -162,13 +230,13 @@
             <c:forEach items="${categoryOptions}" var="category">
                 <div class="category">
                     <div class="meta">
-                        <div class="color" style="background:${category.colorHex};">${category.icon}</div>
+                        <div class="category-icon icon-${category.icon}" style="background:${category.colorHex};"></div>
                         <div>
                             <strong>${category.name}</strong><br>
                             <span class="type">${category.builtIn ? 'Встроенная' : 'Пользовательская'} категория</span>
                         </div>
                     </div>
-                    <span>${category.colorHex}</span>
+    
                 </div>
             </c:forEach>
         </div>
@@ -195,15 +263,83 @@
 
             <div>
                 <label for="colorHex">Цвет категории
-                    <form:input path="colorHex" id="colorHex" placeholder="#1F6B52" />
+                    <span class="color-field">
+                        <form:input path="colorHex" id="colorHex" type="color" />
+                        <span>Выберите оттенок из палитры. Он будет использоваться на карточках, графиках и в списке операций.</span>
+                    </span>
                 </label>
                 <form:errors path="colorHex" cssClass="field-error" />
             </div>
 
             <div>
-                <label for="icon">Иконка
-                    <form:input path="icon" id="icon" placeholder="Например, pet, plane, gift" />
-                </label>
+                <span style="display:block; margin-bottom:10px; font-size:14px; font-weight:600;">Иконка категории</span>
+                <div class="icon-picker">
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="wallet" />
+                        <span class="category-icon icon-wallet"></span>
+                        <span>Доходы</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="fork" />
+                        <span class="category-icon icon-fork"></span>
+                        <span>Еда</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="car" />
+                        <span class="category-icon icon-car"></span>
+                        <span>Транспорт</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="home" />
+                        <span class="category-icon icon-home"></span>
+                        <span>Дом</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="repeat" />
+                        <span class="category-icon icon-repeat"></span>
+                        <span>Подписки</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="spark" />
+                        <span class="category-icon icon-spark"></span>
+                        <span>Досуг</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="health" />
+                        <span class="category-icon icon-health"></span>
+                        <span>Здоровье</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="shirt" />
+                        <span class="category-icon icon-shirt"></span>
+                        <span>Одежда</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="book" />
+                        <span class="category-icon icon-book"></span>
+                        <span>Учёба</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="pet" />
+                        <span class="category-icon icon-pet"></span>
+                        <span>Питомцы</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="plane" />
+                        <span class="category-icon icon-plane"></span>
+                        <span>Поездки</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="gift" />
+                        <span class="category-icon icon-gift"></span>
+                        <span>Подарки</span>
+                    </label>
+                    <label class="icon-choice">
+                        <form:radiobutton path="icon" value="dots" />
+                        <span class="category-icon icon-dots"></span>
+                        <span>Прочее</span>
+                    </label>
+                </div>
                 <form:errors path="icon" cssClass="field-error" />
             </div>
 
