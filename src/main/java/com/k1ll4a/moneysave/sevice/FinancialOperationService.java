@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class FinancialOperationService {
                 form.getOperationDate(),
                 normalizeComment(form.getComment()),
                 form.getPaymentMethod(),
-                joinTags(form.getTags()),
+                joinTags(mergeTags(form)),
                 Instant.now(clock)
         );
 
@@ -61,6 +62,19 @@ public class FinancialOperationService {
             return null;
         }
         return comment.trim();
+    }
+
+    private List<String> mergeTags(OperationForm form) {
+        List<String> mergedTags = new ArrayList<>();
+        if (form.getTags() != null) {
+            mergedTags.addAll(form.getTags());
+        }
+        if (form.getCustomTags() != null && !form.getCustomTags().isBlank()) {
+            for (String customTag : form.getCustomTags().split(",")) {
+                mergedTags.add(customTag);
+            }
+        }
+        return mergedTags;
     }
 
     private String joinTags(List<String> tags) {
