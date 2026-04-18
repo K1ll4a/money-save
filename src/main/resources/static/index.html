@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Авторизация</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg: #f7f1e8;
+			--ink: #1b1a18;
+			--muted: #6d645c;
+			--card: rgba(255, 252, 247, 0.82);
+			--line: rgba(27, 26, 24, 0.12);
+			--accent: #c65f37;
+			--accent-dark: #9e4525;
+			--accent-soft: #f5d7c8;
+			--success: #2d6a4f;
+			--shadow: 0 24px 80px rgba(44, 29, 17, 0.18);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			font-family: "IBM Plex Sans", sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at top left, rgba(198, 95, 55, 0.28), transparent 28%),
+				radial-gradient(circle at bottom right, rgba(58, 109, 140, 0.18), transparent 25%),
+				linear-gradient(135deg, #f9f4ec 0%, #efe2d0 48%, #e7dccf 100%);
+			display: grid;
+			place-items: center;
+			padding: 24px;
+			overflow: hidden;
+		}
+
+		body::before,
+		body::after {
+			content: "";
+			position: fixed;
+			border-radius: 50%;
+			filter: blur(10px);
+			pointer-events: none;
+			opacity: 0.7;
+		}
+
+		body::before {
+			width: 340px;
+			height: 340px;
+			top: -120px;
+			right: -80px;
+			background: rgba(198, 95, 55, 0.17);
+		}
+
+		body::after {
+			width: 280px;
+			height: 280px;
+			left: -90px;
+			bottom: -90px;
+			background: rgba(72, 120, 156, 0.14);
+		}
+
+		.page {
+			width: min(1100px, 100%);
+			display: grid;
+			grid-template-columns: 1.15fr 0.95fr;
+			background: var(--card);
+			backdrop-filter: blur(16px);
+			border: 1px solid rgba(255, 255, 255, 0.55);
+			box-shadow: var(--shadow);
+			border-radius: 30px;
+			overflow: hidden;
+			animation: rise 0.8s ease;
+		}
+
+		.hero {
+			position: relative;
+			padding: 56px;
+			background:
+				linear-gradient(160deg, rgba(27, 26, 24, 0.93), rgba(59, 44, 32, 0.85)),
+				linear-gradient(120deg, #1b1a18, #4d372b);
+			color: #fff8f2;
+		}
+
+		.hero::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background:
+				linear-gradient(transparent 0%, rgba(255, 255, 255, 0.05) 100%),
+				repeating-linear-gradient(
+					135deg,
+					rgba(255, 255, 255, 0.04) 0,
+					rgba(255, 255, 255, 0.04) 10px,
+					transparent 10px,
+					transparent 24px
+				);
+			mix-blend-mode: screen;
+			pointer-events: none;
+		}
+
+		.badge {
+			position: relative;
+			z-index: 1;
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			padding: 10px 16px;
+			border-radius: 999px;
+			background: rgba(255, 248, 242, 0.08);
+			border: 1px solid rgba(255, 248, 242, 0.14);
+			font-size: 14px;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+		}
+
+		.badge::before {
+			content: "";
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: #f7b267;
+			box-shadow: 0 0 18px rgba(247, 178, 103, 0.9);
+		}
+
+		.hero h1 {
+			position: relative;
+			z-index: 1;
+			margin: 28px 0 16px;
+			font: 700 clamp(40px, 6vw, 68px) / 0.95 "Space Grotesk", sans-serif;
+			letter-spacing: -0.05em;
+			max-width: 520px;
+		}
+
+		.hero p {
+			position: relative;
+			z-index: 1;
+			margin: 0;
+			max-width: 500px;
+			font-size: 18px;
+			line-height: 1.65;
+			color: rgba(255, 248, 242, 0.8);
+		}
+
+		.hero-stats {
+			position: relative;
+			z-index: 1;
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 16px;
+			margin-top: 42px;
+		}
+
+		.stat {
+			padding: 18px;
+			border-radius: 18px;
+			background: rgba(255, 248, 242, 0.08);
+			border: 1px solid rgba(255, 248, 242, 0.12);
+		}
+
+		.stat strong {
+			display: block;
+			font: 700 26px/1 "Space Grotesk", sans-serif;
+			margin-bottom: 8px;
+		}
+
+		.stat span {
+			font-size: 14px;
+			color: rgba(255, 248, 242, 0.72);
+		}
+
+		.panel {
+			padding: 48px 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background:
+				linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.88));
+		}
+
+		.login-card {
+			width: min(420px, 100%);
+		}
+
+		.login-card h2 {
+			margin: 0 0 10px;
+			font: 700 34px/1.05 "Space Grotesk", sans-serif;
+			letter-spacing: -0.04em;
+		}
+
+		.subtitle {
+			margin: 0 0 28px;
+			color: var(--muted);
+			line-height: 1.6;
+		}
+
+		form {
+			display: grid;
+			gap: 18px;
+		}
+
+		label {
+			display: grid;
+			gap: 8px;
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		input {
+			width: 100%;
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 16px 18px;
+			font: 500 15px/1.2 "IBM Plex Sans", sans-serif;
+			color: var(--ink);
+			background: rgba(255, 255, 255, 0.9);
+			outline: none;
+			transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+		}
+
+		input:focus {
+			border-color: rgba(198, 95, 55, 0.8);
+			box-shadow: 0 0 0 5px rgba(198, 95, 55, 0.14);
+			transform: translateY(-1px);
+		}
+
+		.row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			font-size: 14px;
+		}
+
+		.check {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			color: var(--muted);
+		}
+
+		.check input {
+			width: 16px;
+			height: 16px;
+			padding: 0;
+			accent-color: var(--accent);
+		}
+
+		a {
+			color: var(--accent-dark);
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		button {
+			border: 0;
+			border-radius: 18px;
+			padding: 16px 20px;
+			font: 700 16px/1 "Space Grotesk", sans-serif;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+		}
+
+		.primary {
+			background: linear-gradient(135deg, var(--accent), #e07a4f);
+			color: #fff;
+			box-shadow: 0 14px 24px rgba(198, 95, 55, 0.28);
+		}
+
+		.primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 18px 32px rgba(198, 95, 55, 0.34);
+		}
+
+		.secondary {
+			background: transparent;
+			border: 1px solid var(--line);
+			color: var(--ink);
+		}
+
+		.secondary:hover {
+			transform: translateY(-2px);
+			background: rgba(255, 255, 255, 0.55);
+		}
+
+		.actions {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		.divider {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			color: var(--muted);
+			font-size: 13px;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			margin: 6px 0;
+		}
+
+		.divider::before,
+		.divider::after {
+			content: "";
+			height: 1px;
+			flex: 1;
+			background: var(--line);
+		}
+
+		.notice {
+			margin-top: 18px;
+			padding: 14px 16px;
+			border-radius: 16px;
+			background: var(--accent-soft);
+			color: #6d2c16;
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.success {
+			display: none;
+			margin-top: 18px;
+			padding: 14px 16px;
+			border-radius: 16px;
+			background: rgba(45, 106, 79, 0.12);
+			color: var(--success);
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.success.show {
+			display: block;
+			animation: rise 0.4s ease;
+		}
+
+		@keyframes rise {
+			from {
+				opacity: 0;
+				transform: translateY(18px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@media (max-width: 920px) {
+			.page {
+				grid-template-columns: 1fr;
+			}
+
+			.hero,
+			.panel {
+				padding: 32px 24px;
+			}
+
+			.hero-stats {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-width: 560px) {
+			body {
+				padding: 14px;
+			}
+
+			.page {
+				border-radius: 24px;
+			}
+
+			.actions {
+				grid-template-columns: 1fr;
+			}
+
+			.row {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<section class="hero">
+			<div class="badge">Secure Access</div>
+			<h1>Добро пожаловать в ваше рабочее пространство</h1>
+			<p>
+				Один экран, чтобы быстро войти, продолжить работу и держать всё важное под рукой
+				без визуального шума и лишних шагов.
+			</p>
+			<div class="hero-stats">
+				<div class="stat">
+					<strong>24/7</strong>
+					<span>доступ к личному кабинету</span>
+				</div>
+				<div class="stat">
+					<strong>256-bit</strong>
+					<span>защита соединения</span>
+				</div>
+				<div class="stat">
+					<strong>1 click</strong>
+					<span>быстрый вход в систему</span>
+				</div>
+			</div>
+		</section>
+
+		<section class="panel">
+			<div class="login-card">
+				<h2>Авторизация</h2>
+				<p class="subtitle">
+					Введите свои данные, чтобы войти в аккаунт и продолжить работу.
+				</p>
+
+				<form id="loginForm">
+					<label for="email">
+						Email
+						<input id="email" name="email" type="email" placeholder="name@example.com" required>
+					</label>
+
+					<label for="password">
+						Пароль
+						<input id="password" name="password" type="password" placeholder="Введите пароль" required>
+					</label>
+
+					<div class="row">
+						<label class="check" for="remember">
+							<input id="remember" name="remember" type="checkbox">
+							<span>Запомнить меня</span>
+						</label>
+						<a href="#">Забыли пароль?</a>
+					</div>
+
+					<div class="actions">
+						<button class="primary" type="submit">Войти</button>
+						<button class="secondary" type="button">Регистрация</button>
+					</div>
+				</form>
+
+				<div class="divider">или</div>
+
+				
+				
+
+				<div class="success" id="successMessage">
+					Форма готова к подключению. Дальше можно привязать её к backend-авторизации.
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<script>
+		const form = document.getElementById("loginForm");
+		const successMessage = document.getElementById("successMessage");
+
+		form.addEventListener("submit", function (event) {
+			event.preventDefault();
+			successMessage.classList.add("show");
+		});
+	</script>
+</body>
+</html>
