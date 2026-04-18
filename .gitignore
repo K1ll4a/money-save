@@ -34,8 +34,4 @@ build/
 .mvn
 .vscode
 .DS_Store
-**/*
-
-
-### VS Code ###
-.vscode/
+.env
